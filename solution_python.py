@@ -7,6 +7,7 @@ class EventSourcer():
         self.redo_stack = Stack()
 
     def add(self, num: int):
+        # pushing opposite operation into undo-stack for addition
         self.undo_stack.push(-1 * num)
         self.value = self.value + num
 
@@ -18,17 +19,22 @@ class EventSourcer():
         if self.undo_stack.isEmpty() is False:
             undo_val = self.undo_stack.pop()
             self.value = self.value + undo_val
+
+            # pushing opposite operation into redo stack
             self.redo_stack.push(-1 * undo_val)
 
     def redo(self):
         if self.redo_stack.isEmpty() is False:
             redo_val = self.redo_stack.pop()
             self.value = self.value + redo_val
+
+            # pushing opposite operation into undo stack
             self.undo_stack.push(-1 * redo_val)
 
     def bulk_undo(self, steps: int):
         for _ in range(steps):
             if self.undo_stack.isEmpty():
+                # Avoiding unecessary iterations
                 break
             else:
                 self.undo()
@@ -36,11 +42,14 @@ class EventSourcer():
     def bulk_redo(self, steps: int):
         for _ in range(steps):
             if self.redo_stack.isEmpty():
+                # Avoiding unecessary iterations
                 break
             else:
                 self.redo()
 
 class Stack():
+    # Implementing quick Stack Data Structure
+
     def __init__(self):
         self.items = []
     
